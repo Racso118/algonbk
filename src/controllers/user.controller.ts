@@ -1129,7 +1129,7 @@ export const resetPassword = async (DPI: string) => {
   // Obtener correo del usuario
   const [rows] = await dbConnection
     
-    .query('SELECT CorreoUsuario FROM usuario WHERE DPI = ?', [DPI]);
+    .query('SELECT CorreoUsuario FROM Usuario WHERE DPI = ?', [DPI]);
 
   if ((rows as any).length === 0) throw new Error('Usuario no encontrado');
 
