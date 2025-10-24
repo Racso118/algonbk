@@ -1166,7 +1166,7 @@ export const cambiopass = async (req: Request, res: Response) => {
   try {
     const [result] = await dbConnection.query(
       `
-        UPDATE usuario
+        UPDATE Usuario
         SET StatusPass = 'Activo',
             Password = ?
         WHERE DPI = ?
