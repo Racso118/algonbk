@@ -22,7 +22,7 @@ export const login = async (req: Request, res: Response) => {
   try {
     const [results] = await dbConnection
       .promise()
-      .query<RowDataPacket[]>('SELECT * FROM usuario WHERE DPI = ? AND Password = ? AND StatusUsuario="Activo"', [DPI, Password]);
+      .query<RowDataPacket[]>('SELECT * FROM Usuario WHERE DPI = ? AND Password = ? AND StatusUsuario="Activo"', [DPI, Password]);
 
     if (results.length === 0) {
       return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
@@ -243,7 +243,7 @@ export const listarCitas = async (req: Request, res: Response) => {
   try {
     const query = `
       SELECT *
-      FROM citas
+      FROM Citas
     `;
 
     const [results] = await dbConnection.promise().query(query);
