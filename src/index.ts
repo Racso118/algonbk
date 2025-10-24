@@ -19,13 +19,15 @@ app.use('/api/users', userRoutes);
 app.use('/api/apoints', ApointRoutes);
 
 // Database connection
-dbConnection.connect((err: Error | null) => {
-  if (err) {
+(async () => {
+  try {
+    await dbConnection.query('SELECT 1'); // verifies pool can query the DB
+    console.log('Database connected successfully');
+  } catch (err: any) {
     console.error('Error connecting to the database:', err);
-    return;
+    process.exit(1);
   }
-  console.log('Database connected successfully');
-});
+})();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

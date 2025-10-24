@@ -21,7 +21,6 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     const [results] = await dbConnection
-      .promise()
       .query<RowDataPacket[]>('SELECT * FROM Usuario WHERE DPI = ? AND Password = ? AND StatusUsuario="Activo"', [DPI, Password]);
 
     if (results.length === 0) {
@@ -58,7 +57,6 @@ export const login = async (req: Request, res: Response) => {
 export const listarUsuarios = async (req: Request, res: Response) => {
   try {
     const [results] = await dbConnection
-      .promise()
       .query<RowDataPacket[]>('SELECT * FROM Usuario where Rol="Paciente" AND StatusUsuario="Activo"');
 
     return res.status(200).json({
@@ -73,7 +71,6 @@ export const listarUsuarios = async (req: Request, res: Response) => {
 export const listarDoctores = async (req: Request, res: Response) => {
   try {
     const [results] = await dbConnection
-      .promise()
       .query<RowDataPacket[]>('SELECT * FROM Usuario where Rol="Doctor" AND StatusUsuario="Activo"');
 
     return res.status(200).json({
@@ -88,7 +85,6 @@ export const listarDoctores = async (req: Request, res: Response) => {
 export const listarEnfermeros = async (req: Request, res: Response) => {
   try {
     const [results] = await dbConnection
-      .promise()
       .query<RowDataPacket[]>('SELECT * FROM Usuario where Rol="Enfermero" AND StatusUsuario="Activo"');
 
     return res.status(200).json({
@@ -103,7 +99,6 @@ export const listarEnfermeros = async (req: Request, res: Response) => {
 export const listarFarmacia = async (req: Request, res: Response) => {
   try {
     const [results] = await dbConnection
-      .promise()
       .query<RowDataPacket[]>('SELECT * FROM Usuario where Rol="Farmacia" AND StatusUsuario="Activo"');
 
     return res.status(200).json({
@@ -118,7 +113,7 @@ export const listarFarmacia = async (req: Request, res: Response) => {
 export const listarLaboratorio = async (req: Request, res: Response) => {
   try {
     const [results] = await dbConnection
-      .promise()
+      
       .query<RowDataPacket[]>('SELECT * FROM Usuario where Rol="Laboratorio" AND StatusUsuario="Activo"');
 
     return res.status(200).json({
@@ -140,7 +135,6 @@ export const obtenerUsuarioPorDPI = async (req: Request, res: Response) => {
   try {
     // Solo filtramos por DPI
     const [results] = await dbConnection
-      .promise()
       .query<RowDataPacket[]>('SELECT * FROM Usuario WHERE DPI = ?', [DPI]);
 
     if (results.length === 0) {
@@ -169,7 +163,6 @@ export const ListaMedicamentos = async (req: Request, res: Response) => {
   try {
     // Consulta SQL: filtra las fichas y medicamentos por el DPI del paciente
     const [results] = await dbConnection
-      .promise()
       .query<RowDataPacket[]>(
         `
         SELECT
@@ -224,7 +217,7 @@ export const obtenerAsignacionPorDPI = async (req: Request, res: Response) => {
       LIMIT 1
     `;
 
-    const [results] = await dbConnection.promise().query(query, [DPI]);
+    const [results] = await dbConnection.query(query, [DPI]);
 
     if ((results as RowDataPacket[]).length === 0) {
       return res.status(404).json({ message: "No hay asignación para este paciente" });
@@ -246,7 +239,7 @@ export const listarCitas = async (req: Request, res: Response) => {
       FROM Citas
     `;
 
-    const [results] = await dbConnection.promise().query(query);
+    const [results] = await dbConnection.query(query);
 
     return res.status(200).json({
       message: "Citas obtenidas correctamente",
@@ -272,7 +265,7 @@ export const listarCitasPorDPI = async (req: Request, res: Response) => {
       ORDER BY FechaCita ASC, IdCita ASC
     `;
 
-    const [results] = await dbConnection.promise().query(query, [DPI]);
+    const [results] = await dbConnection.query(query, [DPI]);
 
     if ((results as any).length === 0) {
       return res.status(404).json({ message: "No se encontraron Citas para este DPI" });
@@ -302,7 +295,7 @@ export const listarCitasPorDoctor = async (req: Request, res: Response) => {
           ORDER BY FechaCita ASC, IdCita ASC
     `;
 
-    const [results] = await dbConnection.promise().query(query, [NombreDoctor]);
+    const [results] = await dbConnection.query(query, [NombreDoctor]);
 
     if ((results as any).length === 0) {
       return res.status(404).json({ message: "No se encontraron Citas para este Especialista" });
@@ -323,7 +316,7 @@ export const listaEspecialidades = async (req: Request, res: Response) => {
       SELECT DISTINCT(Especialidad) FROM Usuario where Rol="Doctor" AND StatusUsuario="Activo" AND Especialidad!="General"
     `;
 
-    const [results] = await dbConnection.promise().query(query);
+    const [results] = await dbConnection.query(query);
 
     return res.status(200).json({
       message: "Citas obtenidas correctamente",
@@ -355,7 +348,7 @@ export const obtenerFichasPorDPI = async (req: Request, res: Response) => {
       ORDER BY fm.Fecha DESC
     `;
 
-    const [result] = await dbConnection.promise().query(query, [dpi]);
+    const [result] = await dbConnection.query(query, [dpi]);
 
     return res.status(200).json({
       message: "Fichas médicas obtenidas correctamente",
@@ -397,7 +390,7 @@ export const obtenerDetalleFichaPorIdFactura = async (req: Request, res: Respons
       ORDER BY fa.IdAccion;
     `;
 
-    const [result] = await dbConnection.promise().query(query, [IdFactura]);
+    const [result] = await dbConnection.query(query, [IdFactura]);
 
     if ((result as any).length === 0) {
       return res.status(404).json({ message: "No se encontró la ficha médica" });
@@ -421,7 +414,7 @@ export const listarEnfermeroAsignado = async (req: Request, res: Response) => {
 
   try {
     const [results] = await dbConnection
-      .promise()
+      
       .query<RowDataPacket[]>(
         'SELECT * FROM EnfermeroAsignado WHERE NombreEnfermero = ? ORDER BY FechaAsignacion DESC',
         [nombreEnfermero]
@@ -461,7 +454,7 @@ export const detalleGastos = async (req: Request, res: Response) => {
       ORDER BY g.Fecha DESC;
     `;
 
-    const [results] = await dbConnection.promise().query<RowDataPacket[]>(query);
+    const [results] = await dbConnection.query<RowDataPacket[]>(query);
 
     return res.status(200).json({
       message: "Detalle de gastos obtenido correctamente",
@@ -506,7 +499,7 @@ export const detalleGastosPorDPI = async (req: Request, res: Response) => {
       ORDER BY g.Fecha DESC;
     `;
 
-    const [results] = await dbConnection.promise().query<RowDataPacket[]>(query, [DPI]);
+    const [results] = await dbConnection.query<RowDataPacket[]>(query, [DPI]);
 
     if (results.length === 0) {
       return res.status(404).json({ message: "No se encontraron gastos para este paciente" });
@@ -527,7 +520,7 @@ export const detalleGastosPorDPI = async (req: Request, res: Response) => {
 export const listarPagos = async (req: Request, res: Response) => {
   try {
     const query = `SELECT * FROM Pagos`;
-    const [results] = await dbConnection.promise().query<RowDataPacket[]>(query);
+    const [results] = await dbConnection.query<RowDataPacket[]>(query);
 
     return res.status(200).json({
       message: "Pagos obtenidos correctamente",
@@ -547,7 +540,7 @@ export const listarPagosPorDPI = async (req: Request, res: Response) => {
 
   try {
     const query = `SELECT * FROM Pagos WHERE DPIPaciente = ?`;
-    const [results] = await dbConnection.promise().query<RowDataPacket[]>(query, [DPI]);
+    const [results] = await dbConnection.query<RowDataPacket[]>(query, [DPI]);
 
     if (results.length === 0) {
       return res.status(404).json({ message: "No se encontraron pagos para este paciente" });
@@ -574,7 +567,7 @@ export const resumenPagosPorTipo = async (req: Request, res: Response) => {
       ORDER BY TotalPagado DESC
     `;
 
-    const [results] = await dbConnection.promise().query<RowDataPacket[]>(query);
+    const [results] = await dbConnection.query<RowDataPacket[]>(query);
 
     return res.status(200).json({
       message: "Resumen de pagos por tipo obtenido correctamente",
@@ -607,7 +600,7 @@ export const resumenGastosPorTipo = async (req: Request, res: Response) => {
       ORDER BY TotalGasto DESC
     `;
 
-    const [results] = await dbConnection.promise().query<RowDataPacket[]>(query);
+    const [results] = await dbConnection.query<RowDataPacket[]>(query);
 
     return res.status(200).json({
       message: "Resumen de gastos por tipo obtenido correctamente",
@@ -652,7 +645,7 @@ export const insertarUsuario = async (req: Request, res: Response) => {
 
   try {
     // Insertar datos directamente sin encriptar contraseña
-    const [result] = await dbConnection.promise().query(
+    const [result] = await dbConnection.query(
       `
       INSERT INTO Usuario 
       (DPI, Nombre, Rol, Especialidad, CorreoUsuario, CorreoFamiliar, Password, Edad)
@@ -689,7 +682,7 @@ export const insertarFicha = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Faltan datos obligatorios" });
   }
 
-  const connection = dbConnection.promise();
+  const connection = dbConnection;
 
   try {
     // 1️⃣ Insertar la ficha médica (cabecera)
@@ -778,7 +771,7 @@ export const asignarEnfermero = async (req: Request, res: Response) => {
     `;
 
     const [result] = await dbConnection
-      .promise()
+      
       .query(query, [dpiPaciente, nombrePaciente, nombreEnfermero]);
 
     return res.status(201).json({
@@ -813,7 +806,7 @@ export const crearCita2 = async (req: Request, res: Response) => {
     `;
 
     const [result] = await dbConnection
-      .promise()
+      
       .query(query, [
         dpiPaciente,
         nombrePaciente,
@@ -857,7 +850,7 @@ export const crearCita = async (req: Request, res: Response) => {
     `;
 
     const [result] = await dbConnection
-      .promise()
+      
       .query(query, [
         dpiPaciente,
         nombrePaciente,
@@ -871,7 +864,7 @@ export const crearCita = async (req: Request, res: Response) => {
 
     // Obtener correo del paciente
     const [rows] = await dbConnection
-      .promise()
+      
       .query('SELECT CorreoFamiliar FROM Usuario WHERE DPI = ?', [dpiPaciente]);
 
     if ((rows as any).length > 0) {
@@ -926,7 +919,7 @@ export const insertarPago = async (req: Request, res: Response) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    const [result] = await dbConnection.promise().query(insertQuery, [
+    const [result] = await dbConnection.query(insertQuery, [
       idCobro,
       DPIPaciente,
       NombrePaciente,
@@ -944,7 +937,7 @@ export const insertarPago = async (req: Request, res: Response) => {
     SET StatusGasto = 'Pagado'
     WHERE ID = ?
   `;
-      await dbConnection.promise().query(updateQuery, [idCobro]);
+      await dbConnection.query(updateQuery, [idCobro]);
     }
 
     return res.status(201).json({
@@ -982,7 +975,7 @@ export const actualizarUsuario = async (req: Request, res: Response) => {
 
   try {
     // Actualiza los campos excepto contraseña
-    const [result] = await dbConnection.promise().query(
+    const [result] = await dbConnection.query(
       `
       UPDATE Usuario
       SET Nombre = ?,
@@ -1030,7 +1023,7 @@ export const actualizarEnfermeroAsignado = async (req: Request, res: Response) =
     `;
 
     const [result] = await dbConnection
-      .promise()
+      
       .query(query, [nombreEnfermero, idAsignacion]);
 
     const affectedRows = (result as any).affectedRows;
@@ -1063,7 +1056,7 @@ export const actualizarCita = async (req: Request, res: Response) => {
     `;
 
     const [result] = await dbConnection
-      .promise()
+      
       .query(query, [fechaCita, idCita]);
 
     if ((result as any).affectedRows === 0) {
@@ -1102,7 +1095,7 @@ export const actualizarEstadoCita = async (req: Request, res: Response) => {
       WHERE IdCita = ?
     `;
 
-    const [result] = await dbConnection.promise().query(query, [estado, idCita]);
+    const [result] = await dbConnection.query(query, [estado, idCita]);
 
     if ((result as any).affectedRows === 0) {
       return res.status(404).json({ message: "No se encontró la cita con ese Id" });
@@ -1127,7 +1120,7 @@ export const resetPassword = async (DPI: string) => {
 
   // Actualizar la tabla Usuario
   await dbConnection
-    .promise()
+    
     .query(
       'UPDATE Usuario SET StatusPass = ?, Password = ? WHERE DPI = ?',
       ['Reiniciar', newPassword, DPI]
@@ -1135,7 +1128,7 @@ export const resetPassword = async (DPI: string) => {
 
   // Obtener correo del usuario
   const [rows] = await dbConnection
-    .promise()
+    
     .query('SELECT CorreoUsuario FROM usuario WHERE DPI = ?', [DPI]);
 
   if ((rows as any).length === 0) throw new Error('Usuario no encontrado');
@@ -1171,7 +1164,7 @@ export const cambiopass = async (req: Request, res: Response) => {
   }
 
   try {
-    const [result] = await dbConnection.promise().query(
+    const [result] = await dbConnection.query(
       `
         UPDATE usuario
         SET StatusPass = 'Activo',
@@ -1203,7 +1196,7 @@ export const suspenderUsuario = async (req: Request, res: Response) => {
   }
 
   try {
-    const [result] = await dbConnection.promise().query(
+    const [result] = await dbConnection.query(
       `
       UPDATE Usuario
       SET StatusUsuario = 'Suspendido'
@@ -1233,7 +1226,7 @@ export const ActualizarStatusMedicamento = async (req: Request, res: Response) =
   try {
     // Actualizar el status del medicamento
     const [result] = await dbConnection
-      .promise()
+      
       .query(
         `
         UPDATE FichaAccion
