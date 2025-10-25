@@ -178,8 +178,8 @@ export const ListaMedicamentos = async (req: Request, res: Response) => {
             fa.Cantidad,
             fa.Frecuencia,
             fa.StatusAccion
-        FROM fichamedica fm
-        INNER JOIN fichaaccion fa
+        FROM Fichamedica fm
+        INNER JOIN Fichaaccion fa
             ON fm.IdFactura = fa.IdFactura
         WHERE fa.Accion = 'Medicamento' AND fa.StatusAccion='Asignado'
           AND fm.DPIPaciente = ?
@@ -187,6 +187,9 @@ export const ListaMedicamentos = async (req: Request, res: Response) => {
         `,
         [DPI]
       );
+
+      console.log(results);
+      
 
     // Siempre retornar 200, aunque no haya registros
     return res.status(200).json({
@@ -211,7 +214,7 @@ export const obtenerAsignacionPorDPI = async (req: Request, res: Response) => {
     // Consulta para verificar si existe asignación
     const query = `
       SELECT *
-      FROM EnfermeroAsignado
+      FROM Enfermeroasignado
       WHERE DPIPaciente = ?
       ORDER BY FechaAsignacion DESC
       LIMIT 1
@@ -243,7 +246,7 @@ export const listarCitas = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Citas obtenidas correctamente",
-      citas: results
+      Citas: results
     });
   } catch (err) {
     console.error("Error al obtener Citas:", err);
@@ -273,7 +276,7 @@ export const listarCitasPorDPI = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Citas obtenidas correctamente",
-      citas: results
+      Citas: results
     });
   } catch (err) {
     console.error("Error al obtener Citas por DPI:", err);
@@ -303,7 +306,7 @@ export const listarCitasPorDoctor = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Citas obtenidas correctamente",
-      citas: results
+      Citas: results
     });
   } catch (err) {
     console.error("Error al obtener Citas por Especialista:", err);
@@ -320,7 +323,7 @@ export const listaEspecialidades = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Citas obtenidas correctamente",
-      citas: results
+      Citas: results
     });
   } catch (err) {
     console.error("Error al obtener Citas:", err);
@@ -343,7 +346,7 @@ export const obtenerFichasPorDPI = async (req: Request, res: Response) => {
         fm.NombreMedico AS Doctor,
         fm.EspecialidadMedico,
         fm.Fecha
-      FROM fichamedica fm
+      FROM Fichamedica fm
       WHERE fm.DPIPaciente = ?
       ORDER BY fm.Fecha DESC
     `;
@@ -383,8 +386,8 @@ export const obtenerDetalleFichaPorIdFactura = async (req: Request, res: Respons
         fa.Cantidad,
         fa.StatusAccion,
         fa.Frecuencia
-      FROM fichamedica fm
-      LEFT JOIN FichaAccion fa
+      FROM Fichamedica fm
+      LEFT JOIN Fichaaccion fa
         ON fm.IdFactura = fa.IdFactura
       WHERE fm.IdFactura = ?
       ORDER BY fa.IdAccion;
@@ -405,7 +408,7 @@ export const obtenerDetalleFichaPorIdFactura = async (req: Request, res: Respons
     return res.status(500).json({ message: "Error en el servidor", error: err });
   }
 };
-export const listarEnfermeroAsignado = async (req: Request, res: Response) => {
+export const listarEnfermeroasignado = async (req: Request, res: Response) => {
   const { nombreEnfermero } = req.body;
 
   if (!nombreEnfermero) {
@@ -416,7 +419,7 @@ export const listarEnfermeroAsignado = async (req: Request, res: Response) => {
     const [results] = await dbConnection
       
       .query<RowDataPacket[]>(
-        'SELECT * FROM EnfermeroAsignado WHERE NombreEnfermero = ? ORDER BY FechaAsignacion DESC',
+        'SELECT * FROM Enfermeroasignado WHERE NombreEnfermero = ? ORDER BY FechaAsignacion DESC',
         [nombreEnfermero]
       );
 
@@ -687,7 +690,7 @@ export const insertarFicha = async (req: Request, res: Response) => {
   try {
     // 1️⃣ Insertar la ficha médica (cabecera)
     const [fichaResult] = await connection.query(
-      `INSERT INTO fichamedica 
+      `INSERT INTO Fichamedica 
        (DPIPaciente, NombrePaciente, NombreMedico, EspecialidadMedico, Observaciones)
        VALUES (?, ?, ?, ?, ?)`,
       [dpi, nombrePaciente, nombreMedico, especialidadMedico, observaciones || null]
@@ -713,7 +716,7 @@ export const insertarFicha = async (req: Request, res: Response) => {
     });
 
     await connection.query(
-      `INSERT INTO FichaAccion 
+      `INSERT INTO Fichaaccion 
        (IdFactura, Accion, NombreAccion, Cantidad, Frecuencia, StatusAccion)
        VALUES ?`,
       [accionesValues]
@@ -766,7 +769,7 @@ export const asignarEnfermero = async (req: Request, res: Response) => {
 
   try {
     const query = `
-      INSERT INTO EnfermeroAsignado (DPIPaciente, NombrePaciente, NombreEnfermero)
+      INSERT INTO Enfermeroasignado (DPIPaciente, NombrePaciente, NombreEnfermero)
       VALUES (?, ?, ?)
     `;
 
@@ -1008,7 +1011,7 @@ export const actualizarUsuario = async (req: Request, res: Response) => {
       .json({ message: "Error al actualizar Usuario", error: err });
   }
 };
-export const actualizarEnfermeroAsignado = async (req: Request, res: Response) => {
+export const actualizarEnfermeroasignado = async (req: Request, res: Response) => {
   const { idAsignacion, nombreEnfermero } = req.body;
 
   if (!idAsignacion || !nombreEnfermero) {
@@ -1017,7 +1020,7 @@ export const actualizarEnfermeroAsignado = async (req: Request, res: Response) =
 
   try {
     const query = `
-      UPDATE EnfermeroAsignado
+      UPDATE Enfermeroasignado
       SET NombreEnfermero = ?
       WHERE IdAsignacion = ?
     `;
@@ -1090,7 +1093,7 @@ export const actualizarEstadoCita = async (req: Request, res: Response) => {
 
   try {
     const query = `
-      UPDATE citas
+      UPDATE Citas
       SET Estado = ?
       WHERE IdCita = ?
     `;
@@ -1229,7 +1232,7 @@ export const ActualizarStatusMedicamento = async (req: Request, res: Response) =
       
       .query(
         `
-        UPDATE FichaAccion
+        UPDATE Fichaaccion
         SET StatusAccion = ?
         WHERE IdAccion = ?;
         `,

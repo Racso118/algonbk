@@ -3,10 +3,10 @@ import { login,listarUsuarios,listarDoctores,listarEnfermeros,
     listarFarmacia,listarLaboratorio, obtenerUsuarioPorDPI,
     insertarUsuario,actualizarUsuario,suspenderUsuario,insertarFicha,
     ListaMedicamentos,ActualizarStatusMedicamento,asignarEnfermero,
-    actualizarEnfermeroAsignado,obtenerAsignacionPorDPI,crearCita,
+    actualizarEnfermeroasignado,obtenerAsignacionPorDPI,crearCita,
 actualizarCita,listarCitas,listarCitasPorDPI,actualizarEstadoCita,
 listaEspecialidades, obtenerFichasPorDPI,obtenerDetalleFichaPorIdFactura,
-listarEnfermeroAsignado,listarCitasPorDoctor,detalleGastos,
+listarEnfermeroasignado,listarCitasPorDoctor,detalleGastos,
 detalleGastosPorDPI,insertarPago,listarPagos,listarPagosPorDPI,resumenPagosPorTipo,resumenGastosPorTipo,
 resetPasswordHandler,cambiopass } from '../controllers/user.controller';
 
@@ -27,7 +27,7 @@ router.post('/citasusuario', listarCitasPorDPI);
 router.get('/especialidades', listaEspecialidades);
 router.post('/fichasusuario', obtenerFichasPorDPI);
 router.post('/detalleficha', obtenerDetalleFichaPorIdFactura);
-router.post('/enfermeroasignado', listarEnfermeroAsignado);
+router.post('/enfermeroasignado', listarEnfermeroasignado);
 router.post('/citasdoctor', listarCitasPorDoctor);
 router.post('/detallegastos', detalleGastos);
 router.post('/detallegastosusuario', detalleGastosPorDPI);
@@ -44,7 +44,7 @@ router.post("/pagogasto", insertarPago);
 router.post("/resetpassword", resetPasswordHandler);
 // Actualizar datos
 router.put("/editar", actualizarUsuario);
-router.put("/actualizarenfermero", actualizarEnfermeroAsignado);
+router.put("/actualizarenfermero", actualizarEnfermeroasignado);
 router.post('/actualizarcita', actualizarCita);
 router.put('/actualizarestadocita', actualizarEstadoCita);
 router.post("/cambiopass", cambiopass);
