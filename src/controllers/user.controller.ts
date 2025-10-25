@@ -178,8 +178,8 @@ export const ListaMedicamentos = async (req: Request, res: Response) => {
             fa.Cantidad,
             fa.Frecuencia,
             fa.StatusAccion
-        FROM fichamedica fm
-        INNER JOIN FichaAccion fa
+        FROM fichaMedica fm
+        INNER JOIN fichaAccion fa
             ON fm.IdFactura = fa.IdFactura
         WHERE fa.Accion = 'Medicamento' AND fa.StatusAccion='Asignado'
           AND fm.DPIPaciente = ?
