@@ -178,7 +178,7 @@ export const ListaMedicamentos = async (req: Request, res: Response) => {
             fa.Cantidad,
             fa.Frecuencia,
             fa.StatusAccion
-        FROM FichaMedica fm
+        FROM fichamedica fm
         INNER JOIN FichaAccion fa
             ON fm.IdFactura = fa.IdFactura
         WHERE fa.Accion = 'Medicamento' AND fa.StatusAccion='Asignado'
@@ -343,7 +343,7 @@ export const obtenerFichasPorDPI = async (req: Request, res: Response) => {
         fm.NombreMedico AS Doctor,
         fm.EspecialidadMedico,
         fm.Fecha
-      FROM FichaMedica fm
+      FROM fichamedica fm
       WHERE fm.DPIPaciente = ?
       ORDER BY fm.Fecha DESC
     `;
@@ -383,7 +383,7 @@ export const obtenerDetalleFichaPorIdFactura = async (req: Request, res: Respons
         fa.Cantidad,
         fa.StatusAccion,
         fa.Frecuencia
-      FROM FichaMedica fm
+      FROM fichamedica fm
       LEFT JOIN FichaAccion fa
         ON fm.IdFactura = fa.IdFactura
       WHERE fm.IdFactura = ?
@@ -687,7 +687,7 @@ export const insertarFicha = async (req: Request, res: Response) => {
   try {
     // 1️⃣ Insertar la ficha médica (cabecera)
     const [fichaResult] = await connection.query(
-      `INSERT INTO FichaMedica 
+      `INSERT INTO fichamedica 
        (DPIPaciente, NombrePaciente, NombreMedico, EspecialidadMedico, Observaciones)
        VALUES (?, ?, ?, ?, ?)`,
       [dpi, nombrePaciente, nombreMedico, especialidadMedico, observaciones || null]
