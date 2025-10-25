@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response) => {
 
     if (user.StatusUsuario !== 'Activo') {
       // Usuario inactivo → redirigir a otra página
-      return res.status(403).json({ message: 'Usuario no activo', redirect: '/usuario-inactivo' });
+      return res.status(403).json({ message: 'Usuario no activo', redirect: '/Usuario-inactivo' });
     }
 
     if (user.StatusPass === 'Reiniciar') {
@@ -343,7 +343,7 @@ export const obtenerFichasPorDPI = async (req: Request, res: Response) => {
         fm.NombreMedico AS Doctor,
         fm.EspecialidadMedico,
         fm.Fecha
-      FROM FichaMedica fm
+      FROM fichamedica fm
       WHERE fm.DPIPaciente = ?
       ORDER BY fm.Fecha DESC
     `;
@@ -383,7 +383,7 @@ export const obtenerDetalleFichaPorIdFactura = async (req: Request, res: Respons
         fa.Cantidad,
         fa.StatusAccion,
         fa.Frecuencia
-      FROM FichaMedica fm
+      FROM fichamedica fm
       LEFT JOIN FichaAccion fa
         ON fm.IdFactura = fa.IdFactura
       WHERE fm.IdFactura = ?
@@ -687,7 +687,7 @@ export const insertarFicha = async (req: Request, res: Response) => {
   try {
     // 1️⃣ Insertar la ficha médica (cabecera)
     const [fichaResult] = await connection.query(
-      `INSERT INTO FichaMedica 
+      `INSERT INTO fichamedica 
        (DPIPaciente, NombrePaciente, NombreMedico, EspecialidadMedico, Observaciones)
        VALUES (?, ?, ?, ?, ?)`,
       [dpi, nombrePaciente, nombreMedico, especialidadMedico, observaciones || null]
@@ -1126,7 +1126,7 @@ export const resetPassword = async (DPI: string) => {
       ['Reiniciar', newPassword, DPI]
     );
 
-  // Obtener correo del usuario
+  // Obtener correo del Usuario
   const [rows] = await dbConnection
     
     .query('SELECT CorreoUsuario FROM Usuario WHERE DPI = ?', [DPI]);
@@ -1150,7 +1150,7 @@ export const resetPasswordHandler = async (req: Request, res: Response) => {
 
     await resetPassword(DPI);
 
-    return res.status(200).json({ message: 'Se ha enviado la nueva contraseña al correo del usuario.' });
+    return res.status(200).json({ message: 'Se ha enviado la nueva contraseña al correo del Usuario.' });
   } catch (error: any) {
     console.error('Error resetPasswordHandler:', error.message || error);
     return res.status(500).json({ message: error.message || 'Error al resetear la contraseña' });
