@@ -178,8 +178,8 @@ export const ListaMedicamentos = async (req: Request, res: Response) => {
             fa.Cantidad,
             fa.Frecuencia,
             fa.StatusAccion
-        FROM fichaMedica fm
-        INNER JOIN fichaAccion fa
+        FROM fichamedica fm
+        INNER JOIN fichaaccion fa
             ON fm.IdFactura = fa.IdFactura
         WHERE fa.Accion = 'Medicamento' AND fa.StatusAccion='Asignado'
           AND fm.DPIPaciente = ?
@@ -206,7 +206,7 @@ export const obtenerAsignacionPorDPI = async (req: Request, res: Response) => {
   if (!DPI) {
     return res.status(400).json({ message: "Falta el DPI del paciente" });
   }
-
+0.
   try {
     // Consulta para verificar si existe asignación
     const query = `
